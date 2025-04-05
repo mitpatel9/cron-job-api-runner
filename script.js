@@ -44,8 +44,7 @@ const marketInactive = async () => {
   let todayMarketData;
 
   //get today active Data from market
-  await axios;
-  getReqest(apiEndPoint.getMarket)
+  await getReqest(apiEndPoint.getMarket)
     .then(function (response) {
       todayMarketData = response.data.data;
     })
