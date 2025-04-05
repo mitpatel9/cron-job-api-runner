@@ -21,6 +21,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Script
-        run: npm start
+      - name: Run Cron Script
+        run: node script.js
 
