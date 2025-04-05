@@ -1,14 +1,12 @@
 const { apiEndPoint } = require("./apiCall/apiEndPoint");
-const { getReqest, postReqest } = require("./apiCall/index");
+const { getReqest, postReqest, putRequest } = require("./apiCall/index");
 
 require("dotenv").config();
 const cron = require("node-cron");
 
-// First function
+// automate market generate
 const marketSchedule = async () => {
   let market_data;
-
-  // get club data from database
   await getReqest(
     apiEndPoint.getClub,
     (res) => {
@@ -21,7 +19,6 @@ const marketSchedule = async () => {
 
   // automate market generate
   cron.schedule("0 1 * * *", async () => {
-    console.log("✅ Running cron job at 12 AM...");
     market_data.map(
       async (data) =>
         await postReqest(
@@ -32,7 +29,7 @@ const marketSchedule = async () => {
             close_time: data?.close_time,
           },
           (res) => {
-            console.log("🎉 Cron Job Service Ended Create task...");
+            console.log("Market Data generate");
           },
           (error) => {
             console.log(error);
@@ -42,7 +39,40 @@ const marketSchedule = async () => {
   });
 };
 
+//automate market Inactive
+const marketInactive = async () => {
+  let todayMarketData;
+
+  //get today active Data from market
+  await axios;
+  getReqest(apiEndPoint.getMarket)
+    .then(function (response) {
+      todayMarketData = response.data.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  // automate  market Inactive
+  cron.schedule("0 23 * * *", async () => {
+    todayMarketData.map(
+      async (data) =>
+        await putRequest(apiEndPoint.getMarket, {
+          id: data?._id,
+          status: "Inactive",
+        })
+          .then((res) => {
+            console.log("Market Data Inactive Task...");
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+    );
+  });
+};
+
 // Run both functions
 (() => {
   marketSchedule();
+  marketInactive();
 })();
