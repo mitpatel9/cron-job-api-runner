@@ -20,7 +20,7 @@ const marketSchedule = async () => {
   );
 
   // automate market generate
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 1 * * *", async () => {
     console.log("✅ Running cron job at 12 AM...");
     market_data.map(
       async (data) =>
