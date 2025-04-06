@@ -13,7 +13,7 @@ const marketSchedule = async () => {
       market_data = res.data.data;
     },
     (error) => {
-      console.log("market club", apiEndPoint.getClub, error);
+      console.log("market club", error);
     }
   );
 
@@ -44,13 +44,15 @@ const marketInactive = async () => {
   let todayMarketData;
 
   //get today active Data from market
-  await getReqest(apiEndPoint.getMarket)
-    .then(function (response) {
-      todayMarketData = response.data.data;
-    })
-    .catch(function (error) {
+  await getReqest(
+    apiEndPoint.getMarket,
+    (res) => {
+      todayMarketData = res.data.data;
+    },
+    (error) => {
       console.log(error);
-    });
+    }
+  );
 
   // automate  market Inactive
   cron.schedule("0 23 * * *", async () => {
@@ -61,7 +63,7 @@ const marketInactive = async () => {
           status: "Inactive",
         })
           .then((res) => {
-            console.log("Market Data Inactive Task...");
+            console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
